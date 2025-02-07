@@ -35,34 +35,37 @@ class HomeModel extends BaseModel
 
         return $result->fetch_assoc();
     }
-
-    function edit($name, $instructor, $duration, $price, $thumbnail)
-    {
-        $sql = "INSERT INTO courses (name, instructor, duration, price, thumbnail) 
-                VALUES (:name, :instructor, :duration, :price, :thumbnail)";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':instructor', $instructor);
-        $stmt->bindParam(':duration', $duration);
-        $stmt->bindParam(':price', $price);
-        $stmt->bindParam(':thumbnail', $thumbnail);
-        return $stmt->execute();
-    }
-
-    function add($id, $name, $instructor, $duration, $price, $thumbnail)
+    function edit($name, $thumbnail, $instructor, $duration, $price, $id)
     {
         $sql = "UPDATE courses 
-                SET name = :name, instructor = :instructor, duration = :duration, price = :price, thumbnail = :thumbnail
-                WHERE id = :id";
+                SET name = ?, instructor = ?, duration = ?, price = ?, thumbnail = ? 
+                WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':instructor', $instructor);
-        $stmt->bindParam(':duration', $duration);
-        $stmt->bindParam(':price', $price);
-        $stmt->bindParam(':thumbnail', $thumbnail);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        
+        // Bind the parameters
+        $stmt->bind_param('sssssi', $name, $instructor, $duration, $price, $thumbnail, $id);
+        
+        // Execute the query
         return $stmt->execute();
     }
+    
+
+    function add($name, $thumbnail,$instructor, $duration, $price)
+    {
+        $sql = "INSERT INTO courses (name,thumbnail, instructor, duration, price) VALUES (?, ?, ?, ?, ?)";
+
+        // Prepare the statement
+        $stmt = $this->conn->prepare($sql);
+        
+        // Bind the parameters
+        $stmt->bind_param("sssssi",$name, $thumbnail,$instructor, $duration, $price);
+        
+        // Execute the query
+        return $stmt->execute();
+        
+    
+    }
+   
     function delete($id)
     {
         $id = $this->conn->real_escape_string($id);
@@ -70,6 +73,5 @@ class HomeModel extends BaseModel
 
         return $this->conn->query($sql);
     }
-}
+    }
 
-?>

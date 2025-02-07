@@ -21,25 +21,23 @@ class HomeController extends BaseController
         $this->homeModel = new HomeModel();
     }
 
-    function index()
-    {
+    function index(){
         $courses = $this->homeModel->getAll();
-        $this->render('listView', ['courses' => $courses]);
-
-        if (isset($_POST['create_courses'])) {
+        require './app/Views/ListView.php';
+    }
+    function add(){
+        require './app/Views/add.php';
+        if (isset($_POST['add'])) {
             $name = $_POST['name'];
             $instructor = $_POST['instructor'];
             $duration = $_POST['duration'];
             $price = $_POST['price'];
-
-            $cover_image = null;
             if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['size'] > 0) {
-                $cover_image = $_FILES['thumbnail']['name'];
+                $thumbnail = $_FILES['thumbnail']['name'];
                 $tmp = $_FILES['thumbnail']['tmp_name'];
-                move_uploaded_file($tmp, '.public/image/' . $cover_image);
-            }
-
-            if ($this->homeModel->add($name, $instructor, $duration, $price, $thumbnail)) {
+                move_uploaded_file($tmp, 'public/image/' . $thumbnail);
+            } else  $thumbnail = null;
+            if ($this->homeModel->add($name, $thumbnail, $instructor, $duration, $price)) {
                 $this->redirect($_SERVER['PHP_SELF']);
             }
         }
@@ -49,7 +47,7 @@ class HomeController extends BaseController
     {
         $editcourses = $this->homeModel->findID($id);
         $this->render('edit', ['courses' => $editcourses]);
-        if (isset($_POST['edit_courses'])) {
+        if (isset($_POST['edit'])) {
             $name = $_POST['name'];
             $instructor = $_POST['instructor'];
             $duration = $_POST['duration'];
@@ -59,10 +57,10 @@ class HomeController extends BaseController
             if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['size'] > 0) {
                 $cover_image = $_FILES['thumbnail']['name'];
                 $tmp = $_FILES['thumbnail']['tmp_name'];
-                move_uploaded_file($tmp, '.public/image/' . $cover_image);
+                move_uploaded_file($tmp, 'public/image/' . $cover_image);
             }
 
-            if ($this->homeModel->edit($name, $instructor, $duration, $price, $thumbnail)) {
+            if ($this->homeModel->edit($id,$name,$thumbnail, $instructor, $duration, $price)) {
                 $this->redirect('?act=/');
             }
         }

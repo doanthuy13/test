@@ -9,11 +9,11 @@
     <form action="" method="post" enctype="multipart/form-data">
         <h1>Tên sách</h1><input type="text" name="name">
         <h1>Hình ảnh thu nhỏ </h1><input type="file" name="thumbnail">
-        <h1>Tác giả</h1><input type="text" name="instructor">
-        <h1>Nhà xuất bản</h1><input type="text" name="duration">
-        <h1>Ngày xuất bản</h1><input type="date" name="price">
+        <h1>Giảng viên</h1><input type="text" name="instructor">
+        <h1>Thời gian khóa học </h1><input type="text" name="duration">
+        <h1>Giá khóa học</h1><input type="number" name="price">
         <br><br>
-        <button type="submit" name="btn_add" >Thêm</button>
+        <button type="submit" name="add" >Thêm</button>
     </form>
 </body>
 </html>
